@@ -1,0 +1,9 @@
+# Normalise all text files to LF in the repository and in working trees,
+# regardless of each developer's core.autocrlf setting.
+* text=auto eol=lf
+
+# Windows-only scripts need CRLF to run correctly.
+*.{cmd,bat} text eol=crlf
+
+# Binary files: never touch line endings or attempt text diffs.
+*.{png,jpg,jpeg,gif,ico,pdf,zip,dll,exe,snk,pfx} binary
