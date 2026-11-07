@@ -6,5 +6,6 @@
     <TargetFramework>net10.0</TargetFramework>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 </Project>
