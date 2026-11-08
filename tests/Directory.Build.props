@@ -1,21 +1,17 @@
 <Project>
 <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
-  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
-  <PropertyGroup>
-    <ImplicitUsings>enable</ImplicitUsings>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != '' and $(MSBuildProjectName.EndsWith('Tests'))">
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
+  <ItemGroup Condition="'$(MSBuildProjectName)' != '' and $(MSBuildProjectName.EndsWith('Tests'))">
+    <None Include="$(MSBuildThisFileDirectory)xunit.runner.json">
+      <Link>xunit.runner.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Using Include="Xunit" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <PackageReference Include="xunit.v3.mtp-v2" />
   </ItemGroup>
+
 </Project>

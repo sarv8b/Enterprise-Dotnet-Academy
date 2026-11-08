@@ -36,7 +36,7 @@ Run all commands from the repository root.
 
 ```bash
 # Restore and build. Warnings are errors, so the build must be clean.
-dotnet build
+dotnet build -warnaserror
 
 # Run the tests (xUnit v3 on Microsoft.Testing.Platform)
 dotnet test
@@ -89,6 +89,8 @@ dotnet sln WorkflowPlatform.slnx add src/WorkflowPlatform.<Name>
 dotnet new xunit3 -o tests/WorkflowPlatform.<Name>.Tests
 dotnet sln WorkflowPlatform.slnx add tests/WorkflowPlatform.<Name>.Tests
 ```
+
+Test project names **must** end in `.Tests`. The shared test settings in [tests/Directory.Build.props](tests/Directory.Build.props) apply only to projects with that suffix. A name like `Core.Test` builds but silently gets no test settings. See `BLD-11` in [CODING_STANDARDS.md](CODING_STANDARDS.md).
 
 After you generate a project from a template, delete any `<TargetFramework>`, `<Nullable>`, and package `Version` attributes it adds. Those settings come from the shared props files.
 

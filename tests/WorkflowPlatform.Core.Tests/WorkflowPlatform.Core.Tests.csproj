@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WorkflowPlatform.core\WorkflowPlatform.core.csproj" />
+    <ProjectReference Include="..\..\src\WorkflowPlatform.Core\WorkflowPlatform.Core.csproj" />
   </ItemGroup>
 </Project>

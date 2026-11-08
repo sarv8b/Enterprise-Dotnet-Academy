@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/WorkflowPlatform.core/WorkflowPlatform.core.csproj" />
+    <Project Path="src/WorkflowPlatform.Core/WorkflowPlatform.Core.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/WorkflowPlatform.Core.Tests/WorkflowPlatform.Core.Tests.csproj" />

@@ -41,6 +41,7 @@ Every rule has an **ID** (e.g. `ASY-2`) and a **level**:
 | BLD-8 | MUST | Never suppress a warning globally without a comment explaining why. Prefer targeted `#pragma` or `[SuppressMessage(..., Justification = "...")]`. |
 | BLD-9 | CHOICE | Solution format: `.slnx` (newer, XML, merge-friendly) vs `.sln` (classic, universal tooling support). |
 | BLD-10 | CHOICE | `ImplicitUsings` on (default, less noise) vs off (explicit dependencies per file). Default: on. |
+| BLD-11 | MUST | Test projects live under `tests/` and their project name ends in `.Tests` (e.g. `WorkflowPlatform.Core.Tests`). `tests/Directory.Build.props` applies the test settings (`OutputType=Exe`, `IsPackable=false`, `xunit.runner.json`, global `using Xunit`, the `xunit.v3.mtp-v2` package) only to projects with this suffix. A project with any other name, such as `Core.Test` or `Core.Testing`, still builds but gets none of these settings, and nothing warns you. Non-test helpers under `tests/` (shared fixtures, test utilities) deliberately leave off the suffix so they stay plain libraries. |
 
 ---
 
