@@ -1,11 +1,11 @@
 <Project>
 <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
-  <PropertyGroup Condition="'$(MSBuildProjectName)' != '' and $(MSBuildProjectName.EndsWith('Tests'))">
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != '' and $(MSBuildProjectName.EndsWith('.Tests'))">
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(MSBuildProjectName)' != '' and $(MSBuildProjectName.EndsWith('Tests'))">
+  <ItemGroup Condition="'$(MSBuildProjectName)' != '' and $(MSBuildProjectName.EndsWith('.Tests'))">
     <None Include="$(MSBuildThisFileDirectory)xunit.runner.json">
       <Link>xunit.runner.json</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
