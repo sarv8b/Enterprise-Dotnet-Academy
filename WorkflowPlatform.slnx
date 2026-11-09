@@ -4,5 +4,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/WorkflowPlatform.Core.Tests/WorkflowPlatform.Core.Tests.csproj" />
+    <Project Path="tests/WorkflowPlatform.Learning.Tests/WorkflowPlatform.Learning.Tests.csproj" />
   </Folder>
 </Solution>
