@@ -1,0 +1,5 @@
+# Test-only overrides; inherits everything else from the root .editorconfig.
+
+[*.cs]
+# TST-9: test names use Method_Scenario_ExpectedResult, which needs underscores.
+dotnet_diagnostic.CA1707.severity = none
