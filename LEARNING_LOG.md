@@ -10,13 +10,13 @@
 | Item | Value |
 |---|---|
 | Current phase | Phase 1 — C# and .NET Fundamentals |
-| Current topic | P1.1 C# types, classes, structs, records — NOT STARTED (next up). P1.6 **MASTERED** 2026-11-08 |
+| Current topic | P1.1 C# types, classes, structs, records — IN PROGRESS (`P1.1-E1` done, `P1.1-E2` next). P1.6 **MASTERED** 2026-11-08 |
 | Current project milestone | M0 — Repository foundation **COMPLETE** (2026-11-05); M1 not started (`src/WorkflowPlatform.Core` scaffolded in `P1.6-E2`) |
 | Topics mastered | 1 / 54 (P1.6) |
-| Exercises completed | 3 (`M0-E1`, `P1.6-E1b`, `P1.6-E2`) |
-| Sessions completed | 3 |
-| Last session | Session 3 — 2026-11-07 to 2026-11-08 — `P1.6-E1b` import-order experiment + `P1.6-E2` layered build configuration |
-| Next session | Session 4 — P1.1 concept intro, then `P1.1-E1` value vs reference semantics (see §9) |
+| Exercises completed | 4 (`M0-E1`, `P1.6-E1b`, `P1.6-E2`, `P1.1-E1`) |
+| Sessions completed | 4 |
+| Last session | Session 4 — 2026-11-09 to 2026-11-10 — P1.1 concept intro + `P1.1-E1` value vs reference semantics |
+| Next session | Session 5 — `P1.1-E2` Model the M1 domain types (see §9) |
 
 ---
 
@@ -39,7 +39,7 @@
 2. Prior professional experience does **not** count until it is demonstrated here. A calibration diagnostic may fast-track a topic, but it still needs one independent exercise.
 3. If a solution was revealed (at Sarvesh's request), the exercise is logged as `solution revealed` and the topic cannot reach `MASTERED` from that exercise alone; a follow-up exercise is required.
 4. Struggles stay listed in §6 until a later exercise shows they are resolved; then move them to "Resolved" with the date and evidence.
-5. Exercise IDs follow `P{phase}.{topic}-E{n}` (e.g. `P1.3-E2`). Standalone exercises live in `exercises/<exercise-id>-<short-name>/`. Project work lives in `src/` and `tests/`.
+5. Exercise IDs follow `P{phase}.{topic}-E{n}` (e.g. `P1.3-E2`). Standalone exercises live in `exercises/<exercise-id>-<short-name>/`. Project work lives in `src/` and `tests/`. Learning tests (throwaway types that prove a language behaviour) live in `tests/WorkflowPlatform.Learning.Tests`, so they inherit the `tests/` build layer (`BLD-11`); a test project under `exercises/` would not (changed 2026-11-09).
 
 ---
 
@@ -49,7 +49,7 @@
 
 | ID | Topic | Status | Evidence (exercises / check) | Notes |
 |---|---|---|---|---|
-| P1.1 | C# types, classes, structs, records | NOT STARTED | — | Diagnostic S1: gap — value vs reference copy (wrong at confidence M); records/`with` unknown. **Teach at full depth.** |
+| P1.1 | C# types, classes, structs, records | IN PROGRESS | `P1.1-E1` completed (predictions + 12 learning tests). Part A: 5 wrong or unknown out of 13, including Q2 and the Q1 bonus at confidence H; all corrected and proven by tests or compiler codes. Q2 explanation accepted in own words. | Not `MASTERED`: still needs the class/struct/record design choice with own-words reasoning (`P1.1-E2`, Phase 1 exit criterion). Diagnostic S1 value vs reference gap resolved (§6.3). |
 | P1.2 | OOP, interfaces, inheritance, polymorphism | NOT STARTED | — | Diagnostic S1: partial — named override/hiding, wrong on hiding behaviour |
 | P1.3 | Generics, delegates, events, LINQ | NOT STARTED | — | Diagnostic S1: partial — `ToList()` snapshot right; deferred execution + captured variable wrong |
 | P1.4 | Exception handling and resource management | NOT STARTED | — | Diagnostic S1: gap — missed `throw ex;` and missing error context |
@@ -158,6 +158,7 @@ Session 1's calibration diagnostic was a check, not an exercise, and is not list
 | `M0-E1` | Repository foundation | P1.6 | 2026-11-05 | 0 (one requirement clarification on the ADR; no hints) | No | Passed after one revision round. First review: `README.md` empty (`DOC-1`), `dotnet format` failed (`NAM-2`), mixed CRLF/LF line endings. All fixed in `d1b6dfe`. Commits `e83473c`, `d1b6dfe`. | `P1.6-E1b`, then `P1.6-E2` |
 | `P1.6-E1b` | Prove MSBuild import order (throwaway folder outside the repo) | P1.6 | 2026-11-07 | 1 (`GetPathOfFileAbove` start directory: nudge that the search includes the start folder, then reproduce-and-fix) | No | Passed. Raw output: (i) `TreatWarningsAsErrors=false`, `Nullable=disable`; (ii) `Nullable=enable`. Both disproved the S2 predictions. Rule stated correctly in own words. First answer to (a) was wrong (thought the search started above the current file); reproduced `MSB4011` and fixed it with `$(MSBuildThisFileDirectory)../`. Bonus: built the wrong (root) project, which exposed nested-project globbing. | `P1.6-E2` |
 | `P1.6-E2` | Layered build configuration + empty `src/WorkflowPlatform.Core` | P1.6 | 2026-11-08 | 3 (explanations of per-setting reasons, items vs properties, the `.Tests` condition expression, and the two kinds of MSBuild warnings given at Sarvesh's request; Sarvesh implemented every change) | No | Passed after four review rounds. Fixed: lowercase `WorkflowPlatform.core` → `WorkflowPlatform.Core`; per-project `xunit.runner.json` time bomb → one shared file via `$(MSBuildThisFileDirectory)` + `Link` (Option C), `Exists` guard removed so it fails fast; duplicate `ImplicitUsings`; stale `obj/` after the rename (`MSB4011`); stray `.slnx` folder; `Class1.cs`; generated `graphify-out/` committed → untracked and ignored; test-only settings gated on `.Tests` and documented as `BLD-11`; `MSBuildTreatWarningsAsErrors` in root props and `-warnaserror` in the README. Both warning proofs run. Gates: build (`-warnaserror`) 0/0, test 1/1, format clean. Commits `b98c675`, `882efb3`, `9cd50e8`, fast-forwarded to `main`. | P1.1 (`P1.1-E1`) |
+| `P1.1-E1` | Value vs reference semantics: predict, then prove with learning tests | P1.1 | 2026-11-10 | 2 for the predictions (hints pointing at the rule to apply, no answers revealed); 3 for test quality (specific pointers such as `Assert.Same`, splitting tests, the `Counter` property question). **Unconfirmed:** commits `ba8dca2` and `b987052` carry a `Co-Authored-By: Claude` trailer; asked whether another assistant session was used, not yet answered. | No | Passed after one revision round. Part A wrong or unknown: Q1 bonus (H), Q2 (H), Q4 line 1, Q6 `Cancel`; design answer too vague. All corrected: CS1612, `"Triage"`, `3`, CS1503, CS9035, CS8852; design → immutable collections. Test fixes: `TST-9` names, `TST-5` sections, one behaviour per test, `Assert.Same` on the shared list, missing Q4 cases added, `Counter` field → property (no pragma), stray runner.json removed. Independent: scoped CA1707 suppression in `tests/.editorconfig`. Gates: build (`-warnaserror`) 0/0, test 12/12, format clean. Branch `typesincsharp` (commits `3ec6420`, `ba8dca2`, `b987052`), **not merged yet**. | `P1.1-E2` |
 
 **Hint levels:** 0 = none · 1 = nudge · 2 = direction · 3 = specific pointer · 4 = partial code · 5 = full solution (explicitly requested)
 
@@ -183,21 +184,27 @@ Items are added only after an explanation check or independent implementation.
 - [P1.6] Conditional settings by naming convention (`$(MSBuildProjectName.EndsWith('.Tests'))`), with the convention documented (`BLD-11`) because nothing warns when it is broken — `P1.6-E2` (2026-11-08).
 - [P1.6] Evaluation-time vs build-time MSBuild warnings: `MSBuildTreatWarningsAsErrors` only applies after evaluation, so it misses `MSB4011`; the `-warnaserror` switch is set before evaluation and catches both — proven with two forced failures, summary accepted after one correction (2026-11-08).
 - [P1.6] Repo hygiene: don't nest a project inside another project's folder (default `**/*.cs` globbing), clear `bin/`/`obj/` after a rename, don't commit generated output — seen and fixed in `P1.6-E1b`/`P1.6-E2` (2026-11-08).
+- [P1.1] What assignment and parameter passing copy: a struct copies its data; a class copies the reference, so mutation through a parameter reaches the caller's object but reassigning the parameter does not — Q1/Q2 tests and own-words explanation, `P1.1-E1` (2026-11-10).
+- [P1.1] A `List<T>` indexer returns a **copy** of a struct element, so `list[0].Value = 5` is rejected (CS1612) — `P1.1-E1` (2026-11-10).
+- [P1.1] `==` on classes compares references; on records it compares member values, using each member's own equality (so a `List<T>` member compares by reference) — Q3/Q5 predicted correctly and tested (2026-11-10).
+- [P1.1] `with` is a shallow copy: a new object that shares reference-type members; equal (`==`) is not the same as same (`ReferenceEquals`) — tested with `Assert.Same`/`ReferenceEquals`, `P1.1-E1` (2026-11-10).
+- [P1.1] `required` + `init` (CS9035, CS8852) and strongly typed IDs as distinct types (CS1503) — `P1.1-E1` (2026-11-10).
+- [P1.6] `global.json` `version` is a **minimum** under `latestFeature` (10.0.105 is rejected for 10.0.114) — Session 4 warm-up (2026-11-09).
+- [Testing] `TST-9` names (`Method_Scenario_ExpectedResult`), `TST-5` Arrange/Act/Assert, one behaviour per test, assert the cause rather than the symptom; scoped analyzer overrides per folder with `.editorconfig` — `P1.1-E1` (2026-11-10).
 - [GIT] Line-ending policy: `.gitattributes` (`* text=auto eol=lf`, binary exclusions) plus `end_of_line = lf` in `.editorconfig` — implemented independently in `d1b6dfe` (2026-11-05).
 - [DOC] Writing an ADR with real alternatives, honest costs and working rules — `docs/adr/0001` (2026-11-05).
 
 ### 6.2 Concepts I struggle with
 
-Each item stays here until a later exercise shows it is resolved. Items marked S1 come from the Session 1 calibration diagnostic (2026-11-04); S2 from Session 2 (2026-11-05); S3 from Session 3 (2026-11-07 to 2026-11-08).
+Each item stays here until a later exercise shows it is resolved. Items marked S1 come from the Session 1 calibration diagnostic (2026-11-04); S2 from Session 2 (2026-11-05); S3 from Session 3 (2026-11-07 to 2026-11-08); S4 from Session 4 (2026-11-09 to 2026-11-10).
 
-- [P1.6] **`global.json` version is a minimum (S2)** — did not mention that `10.0.114` + `latestFeature` rejects 10.0.105. Still not checked (the question offered in S3 was not answered). Plan: one-line check at the start of Session 4.
+- [Process] **Confidence calibration (S4)** — in `P1.1-E1` Part A both wrong answers that carried a label were marked **H** (Q1 bonus, Q2), and Q3/Q4 had no labels. High confidence is not yet a reliable signal on value/reference questions. Plan: keep labelling every prediction; review H-labelled misses at the start of each check.
 - [P1.6] **Items accumulate, properties are replaced (S3)** — first answer to the `TestUtilities` question assumed a `.csproj` can "override" everything from a props file; items (`PackageReference`, `Using`) add to a list and need `Remove`. Explained by the mentor and applied via the `.Tests` condition, but not yet re-explained by Sarvesh. Plan: one prediction question when items next come up (M1 project references).
 - [P1.6] **Justifying settings one by one (S3)** — moved test settings to `tests/Directory.Build.props` as a group ("all test projects may share them"), which let the duplicate `ImplicitUsings` and the runner.json problem through. Asked three times for a reason per setting; the final reasons were given by the mentor. Plan: in future config/design reviews, Sarvesh justifies each line before submitting.
 - [Process] **Checking researched answers against evidence (S3)** — the first MSBuild-warnings answer was pasted text that repeated a claim (`TreatWarningsAsErrors` covers MSBuild warnings) that Sarvesh's own build output had just disproved; the follow-up summary also conflated the compiler property with the MSBuild one. Resolved for this concept after running the proofs, but the habit to build is: run the experiment first, then write the answer in own words.
 
-- [P1.1] **Value vs reference copy semantics (S1)** — predicted `2 1` instead of `1 2` for struct vs class assignment, at confidence M (confident misconception — top priority). Correction: assigning a struct copies the data; assigning a class copies the reference. Plan: P1.1 prediction drills + exercise.
-- [P1.1] **Records, `with`, value equality** — concept unknown. Correction: records compare by value; `with` makes a new object via a shallow copy; a `List<T>` property compares by reference and is shared between copies. Plan: P1.1 exercise.
-- [P1.1] **Choosing class vs record vs struct** — right choices for entity/audit entry, but justified by overriding/interfaces rather than identity vs value semantics; strongly typed IDs (`readonly record struct`) unknown. Plan: P1.1 design question.
+- [P1.1] **Choosing class vs record vs struct** — right choices for entity/audit entry, but justified by overriding/interfaces rather than identity vs value semantics. Strongly typed IDs are now understood (`P1.1-E1`), but the choice itself has not been made and justified yet. Plan: `P1.1-E2` design table.
+- [P1.1] **Real immutability and equality strategy (S4)** — first design answer was "make it readonly" (the property is already `init`; the list contents are the mutable part); revised to immutable collections. Not yet handled: defensive copy of the caller's list, and that `ImmutableArray<T>` alone does not give content-based record equality. Plan: `P1.1-E2`.
 - [P1.2] **Method hiding (`new`)** — predicted `derived`; hidden methods bind to the variable's compile-time type, overrides to the runtime type. Plan: P1.2 prediction question.
 - [P1.3] **Deferred execution + closures** — expected the query to use the original `minLength` and list; a deferred query reads the captured variable's current value and the current collection when enumerated. Plan: P1.3 prediction exercise (also a Phase 1 exit criterion).
 - [P1.4] **Rethrowing and error context** — missed that `throw ex;` resets the stack trace (`ERR-2`), that the log message lost the exception, and that the `catch` added no value. Plan: P1.4 exercise.
@@ -212,6 +219,9 @@ Each item stays here until a later exercise shows it is resolved. Items marked S
 ### 6.3 Resolved struggles
 
 - [P1.6] **SDK selection** (S1, Q11b) — had believed the `.csproj` picks the SDK. Resolved 2026-11-05: pinned the SDK with `global.json` in `M0-E1` and correctly predicted which SDK versions it accepts (check a). Remaining nuance (the version is a minimum) is tracked separately in §6.2.
+- [P1.6] **`global.json` version is a minimum** (S2) — resolved 2026-11-09: Session 4 warm-up answered correctly (10.0.105 rejected because the pinned version is a minimum under `latestFeature`).
+- [P1.1] **Value vs reference copy semantics** (S1, confidence M; resurfaced in S4 as Q2 at confidence H) — resolved 2026-11-10: corrected predictions proven by tests in `P1.1-E1` (struct copied out of a list, class mutated through a parameter but not reassigned), and explained in own words: the parameter holds a copy of the caller's reference.
+- [P1.1] **Records, `with`, value equality** (S1, unknown) — resolved 2026-11-10: record vs class equality and Q5 predicted correctly; `with` shallow copy proven with `Assert.Same(v1.Steps, v2.Steps)` after the Q4 line-1 miss.
 - [P1.6] **`Directory.Build.props` import rule** (S2, confidence H) — had predicted that the nested and the root props files both apply. Resolved 2026-11-07: own experiment `P1.6-E1b` showed `TreatWarningsAsErrors=false` (root file never imported); stated the first-found-then-stop rule in own words and chained the files correctly with `GetPathOfFileAbove` in `P1.6-E2`.
 - [P1.6] **Property evaluation order** (S2, confidence H) — had predicted that the `.csproj` beats `Directory.Build.targets` ("nearest"). Resolved 2026-11-07: experiment (ii) showed `Nullable=enable` from `.targets`; explained "props → `.csproj` → targets, last assignment wins" and used it to place the `<Import>` at the top of `tests/Directory.Build.props`.
 
@@ -219,7 +229,7 @@ Each item stays here until a later exercise shows it is resolved. Items marked S
 
 ## 7. Upcoming topics (next up)
 
-1. **P1.1** C# types, classes, structs, records — next (Session 4)
+1. **P1.1** C# types, classes, structs, records — IN PROGRESS; `P1.1-E1` done, `P1.1-E2` next (Session 5)
 2. **P1.2** OOP, interfaces, inheritance, polymorphism
 3. **P1.3** Generics, delegates, events, LINQ
 4. **P1.4** Exception handling and resource management
@@ -251,18 +261,21 @@ A milestone is complete only when every "Done when" criterion in `PROJECT_SPEC.m
 
 ## 9. Next session plan
 
-### Session 4 — Start P1.1 C# types, classes, structs, records
+### Session 5 — Finish P1.1
 
-**Warm-up (5 minutes):** the open P1.6 check: with `"version": "10.0.114"` + `latestFeature`, what happens for a teammate who has only SDK 10.0.105 installed, and why? Also answer the carried-over question: is `insert_final_newline = false` a deliberate policy?
+**Before starting:** answer the open `Co-Authored-By` question (§10, Session 4) and merge `typesincsharp` into `main`.
 
-**Concept intro:** value vs reference semantics (what assignment copies), equality (reference vs value), immutability with `init` and `required`, records and `with` (shallow copy), and `readonly record struct` for strongly typed IDs. Revisits diagnostic Q1, Q2 and Q7 (§6.2), Sarvesh's top-priority confident misconception.
+**Next exercise: `P1.1-E2` Model the M1 domain types (~50 minutes)** — brief already given in Session 4.
+- Real project code in `src/WorkflowPlatform.Core`, tests in `tests/WorkflowPlatform.Core.Tests`, on a new branch. Names from `PROJECT_SPEC.md` §4.
+- Types: `DefinitionId`, `InstanceId`, `StepKind`, `Step`, `Transition`, `WorkflowDefinition` (BR-03: immutable), `AuditEntry` (BR-08: never changed), `WorkflowInstance`. Shapes only; no validation or transition logic.
+- Deliverables:
+  - a design table: class, struct or record for each type, with one sentence of reasoning (identity vs value, mutability);
+  - real immutability of the steps, including against the caller's original list;
+  - a justified equality strategy for `WorkflowDefinition`: (a) override `Equals`/`GetHashCode`, (b) identity by ID + version, or (c) a structural-equality collection;
+  - tests, one behaviour each;
+  - gates.
 
-**Next exercise: `P1.1-E1` Value vs reference semantics (~40 minutes)**
-- Part A: predict the output of short snippets (struct vs class assignment, record equality, `with` over a `List<T>` property), with a confidence label on each.
-- Part B: prove every prediction with xUnit tests in `tests/WorkflowPlatform.Core.Tests` (or `exercises/P1.1-E1-value-semantics/` if the types are throwaway). One test per behaviour, named per `TST-9`.
-- The detailed brief will be given at the start of the exercise.
-
-**Then:** `P1.1-E2`: choose class, struct or record for the M1 domain objects (workflow definition, state, transition, audit entry, instance ID) and justify each choice. That covers the first Phase 1 exit criterion.
+**Then:** if `P1.1-E2` passes, P1.1 can be marked `MASTERED` and Session 6 starts **P1.2** OOP, interfaces, inheritance, polymorphism.
 
 ---
 
@@ -330,6 +343,31 @@ A milestone is complete only when every "Done when" criterion in `PROJECT_SPEC.m
   - Polish: the redundant `'$(MSBuildProjectName)' != ''` guard in `tests/Directory.Build.props`, and the leading space in commit `9cd50e8`'s message (don't rewrite history).
   - `LEARNING_LOG.md` changes from this session are uncommitted.
 - **Next exercise:** `P1.1-E1` Value vs reference semantics, after the P1.1 concept intro (see §9).
+
+### Session 4 — 2026-11-09 to 2026-11-10
+- **Topics covered:** P1.1 concept intro: what assignment and parameter passing copy, reference vs value equality, `init`/`required`, records and `with` (shallow copy), `readonly record struct` for strongly typed IDs, choosing class/record/struct for domain objects.
+- **Exercises:** `P1.1-E1` Value vs reference semantics — **completed**, hint level 2–3 (see §5; independence of the test-quality commits not yet confirmed).
+- **Understanding check:**
+  - Warm-up: `global.json` minimum version — correct.
+  - Part A predictions: correct on Q1 output, Q3, Q4 lines 2–4, Q5, Q6 line 1 and Q7. Wrong or unknown on the Q1 bonus (H), Q2 (H), Q4 line 1 and Q6 `Cancel`. All revised correctly and proven by 12 tests and four compiler error codes.
+  - Q2 explanation in own words — accepted.
+  - Design question: "make it readonly" (too vague) → "immutable collections" (right direction). The equality catch is deferred to `P1.1-E2`.
+- **Mistakes and corrections:**
+  - Q2: thought reassigning a parameter changes the caller's object → the parameter holds a **copy** of the reference.
+  - Q1 bonus: thought `counters[0].Value = 5` compiles → CS1612, because the indexer returns a copy.
+  - Q4: thought `with` copies the list → it copies the reference, so the list is shared.
+  - Tests: names not `TST-9`, no AAA sections, two behaviours in one test, a misleading name ("StructVsClass" for a record test), `Console.WriteLine` in tests, a symptom asserted instead of the cause → all fixed.
+  - `public int _value` field (breaks `NAM-1`) hidden behind a CA1051 pragma → a property, no pragma.
+  - Per-project `xunit.runner.json` left in the new project → removed (the shared file applies).
+- **Best practices introduced:** `Assert.Same`/`NotSame` for identity questions; "equal is not the same as same"; document compile-time behaviour with the exact `CSxxxx` code; scope analyzer overrides per folder with `.editorconfig`; strongly typed IDs; `LNG-5` (no mutable structs outside teaching code).
+- **Status changes:** P1.1 `NOT STARTED` → `IN PROGRESS`. Three struggles resolved (§6.3): `global.json` minimum, value vs reference copy, records/`with`.
+- **Open items carried over:**
+  - Did another assistant session co-author commits `ba8dca2`/`b987052`? This affects the logged hint level.
+  - Merge `typesincsharp` into `main`.
+  - Minor P1.6 polish (redundant `'$(MSBuildProjectName)' != ''` guard).
+  - Optional ADR `0002`.
+  - `insert_final_newline` resolved: it was not deliberate and was switched to `true` in `b9a07d2`.
+- **Next exercise:** `P1.1-E2` Model the M1 domain types (see §9).
 
 <!--
 ### Session N — YYYY-MM-DD
