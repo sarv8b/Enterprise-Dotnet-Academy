@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace WorkflowPlatform.Learning.Tests;
 
 public class ValueSemanticsTests
@@ -171,5 +173,15 @@ public class ValueSemanticsTests
         // Assert
         Assert.Equal("Reported", t.From);
         Assert.Equal("Triage", t.To);
+    }
+
+    [Fact]
+    public static void TestMutability_ContentsOfImmutableArray_AreMutable()
+    {
+        var steps = ImmutableArray.Create(new MutableStep { Name = "Reported" });
+
+        steps[0].Name = "Hacked";             // (1) compiles?
+        //steps[0] = new MutableStep();      // (2) compiles?
+        Assert.Equal("Hacked", steps[0].Name);     // (3) output?
     }
 }
