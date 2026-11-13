@@ -12,3 +12,5 @@ public class Transition
     public required string From { get; init; }
     public required string To { get; init; }
 }
+
+public class MutableStep { public string Name { get; set; } = ""; }
