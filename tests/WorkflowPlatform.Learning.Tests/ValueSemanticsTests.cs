@@ -2,6 +2,11 @@ using System.Collections.Immutable;
 
 namespace WorkflowPlatform.Learning.Tests;
 
+sealed record WorkflowStepNew(string Name, StepKind Kind);
+sealed class WorkflowStepNewClass { public string Name { get; init; } = ""; public StepKind Kind { get; init; } = StepKind.Start; }
+sealed record TransitionNew(string Name, WorkflowStepNew FromStep, WorkflowStepNew ToStep);
+sealed record TransitionNewClass(string Name, WorkflowStepNewClass FromStep, WorkflowStepNewClass ToStep);
+
 public class ValueSemanticsTests
 {
     [Fact]
@@ -183,5 +188,33 @@ public class ValueSemanticsTests
         steps[0].Name = "Hacked";             // (1) compiles?
         //steps[0] = new MutableStep();      // (2) compiles?
         Assert.Equal("Hacked", steps[0].Name);     // (3) output?
+    }
+
+    [Fact]
+    public static void EqualityOperator_NestedRecordSeparateInstancesSameValue_ReturnsTrue()
+    {
+        // Arrange
+        var t1 = new TransitionNew("ReportToTriage", new WorkflowStepNew("Reported", StepKind.Start), new WorkflowStepNew("Triage", StepKind.ManualTask));
+        var t2 = new TransitionNew("ReportToTriage", new WorkflowStepNew("Reported", StepKind.Start), new WorkflowStepNew("Triage", StepKind.ManualTask));
+
+        // Act
+        var areEqual = t1 == t2;
+
+        // Assert
+        Assert.True(areEqual);
+    }
+
+    [Fact]
+    public static void EqualityOperator_ClassNestedInRecordEquality_ReturnsFalse()
+    {
+        // Arrange
+        var t1 = new TransitionNewClass("ReportToTriage", new WorkflowStepNewClass { Name = "Reported", Kind = StepKind.Start }, new WorkflowStepNewClass { Name = "Triage", Kind = StepKind.ManualTask });
+        var t2 = new TransitionNewClass("ReportToTriage", new WorkflowStepNewClass { Name = "Reported", Kind = StepKind.Start }, new WorkflowStepNewClass { Name = "Triage", Kind = StepKind.ManualTask });
+
+        // Act
+        var areEqual = t1 == t2;
+
+        // Assert
+        Assert.False(areEqual);
     }
 }

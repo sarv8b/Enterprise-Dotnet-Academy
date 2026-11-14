@@ -14,3 +14,13 @@ public class Transition
 }
 
 public class MutableStep { public string Name { get; set; } = ""; }
+public enum StepKind
+{
+    Start,
+    ManualTask,
+    Approval,
+    AutomatedAction,
+    Decision,
+    End
+}
+
