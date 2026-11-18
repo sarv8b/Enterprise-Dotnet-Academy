@@ -1,8 +1,7 @@
 namespace WorkflowPlatform.Learning.Tests;
 
-// P1.2-E1 Part B: prove the Part A predictions.
-// For each test: write your prediction + confidence label first, commit, then implement and run.
-// Each test fails with Assert.Fail until you replace the body.
+// P1.2-E1 Part B: proves the Part A predictions about virtual dispatch, method hiding
+// and interface re-implementation. Each test records the prediction and confidence label.
 
 public class ObjectResolutionTests
 {
@@ -14,16 +13,30 @@ public class ObjectResolutionTests
     public void Send_EscalationNotifierViaEmailNotifierVariable_ReturnsEscalation()
     {
         // Prediction: escalation (H)
+
+        // Arrange
         EmailNotifier n = new EscalationNotifier();
-        Assert.Equal("escalation", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("escalation", result);
     }
 
     [Fact]
     public void Describe_EscalationNotifierViaEmailNotifierVariable_ReturnsBasic()
     {
         // Prediction: basic (H)
+
+        // Arrange
         EmailNotifier n = new EscalationNotifier();
-        Assert.Equal("basic", n.Describe());
+
+        // Act
+        var result = n.Describe();
+
+        // Assert
+        Assert.Equal("basic", result);
     }
 
     // ---------------------------------------------------------------
@@ -34,16 +47,30 @@ public class ObjectResolutionTests
     public void Describe_EscalationNotifierViaOwnType_ReturnsUrgent()
     {
         // Prediction: urgent (H)
+
+        // Arrange
         var n = new EscalationNotifier();
-        Assert.Equal("urgent", n.Describe());
+
+        // Act
+        var result = n.Describe();
+
+        // Assert
+        Assert.Equal("urgent", result);
     }
 
     [Fact]
     public void Describe_EscalationNotifierCastToEmailNotifier_ReturnsBasic()
     {
         // Prediction: basic (H)
+
+        // Arrange
         var n = (EmailNotifier)new EscalationNotifier();
-        Assert.Equal("basic", n.Describe());
+
+        // Act
+        var result = n.Describe();
+
+        // Assert
+        Assert.Equal("basic", result);
     }
 
     // ---------------------------------------------------------------
@@ -54,26 +81,47 @@ public class ObjectResolutionTests
     public void Send_AuditedNotifierViaOwnType_ReturnsAudited()
     {
         // Prediction: audited (H)
+
+        // Arrange
         var n = new AuditedNotifier();
-        Assert.Equal("audited", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("audited", result);
     }
 
     [Fact]
     public void Send_AuditedNotifierCastToEscalationNotifier_ReturnsEscalation()
     {
         // Prediction: escalation (H)
+
+        // Arrange
         var n = (EscalationNotifier)new AuditedNotifier();
-        Assert.Equal("escalation", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("escalation", result);
     }
 
     [Fact]
     public void Send_AuditedNotifierViaInterface_ReturnsEscalation()
     {
         // Prediction: escalation (H)
+
+        // Arrange
 #pragma warning disable CA1859 // Use concrete types when possible for improved performance
         var n = (INotifier)new AuditedNotifier();
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
-        Assert.Equal("escalation", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("escalation", result);
     }
 
     // ---------------------------------------------------------------
@@ -84,18 +132,32 @@ public class ObjectResolutionTests
     public void Send_LoggedNotifierViaInterface_ReturnsLogged()
     {
         // Prediction: logged (H)
+
+        // Arrange
 #pragma warning disable CA1859 // Use concrete types when possible for improved performance
         var n = (INotifier)new LoggedNotifier();
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
-        Assert.Equal("logged", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("logged", result);
     }
 
     [Fact]
     public void Send_LoggedNotifierCastToEmailNotifier_ReturnsEscalation()
     {
         // Prediction: escalation (H)
+
+        // Arrange
         var n = (EmailNotifier)new LoggedNotifier();
-        Assert.Equal("escalation", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("escalation", result);
     }
 
     // ---------------------------------------------------------------
@@ -107,10 +169,17 @@ public class ObjectResolutionTests
     {
         // Contrast (i): like AuditedNotifier, but `public new string Send()` (no `virtual`).
         // Prediction: escalation (H)
+
+        // Arrange
 #pragma warning disable CA1859 // Use concrete types when possible for improved performance
         var n = (INotifier)new AuditedNotifier2();
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
-        Assert.Equal("escalation", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("escalation", result);
     }
 
     [Fact]
@@ -118,10 +187,17 @@ public class ObjectResolutionTests
     {
         // Contrast (ii): like LoggedNotifier, but `public new virtual string Send()`.
         // Prediction: logged (H)
+
+        // Arrange
 #pragma warning disable CA1859 // Use concrete types when possible for improved performance
         var n = (INotifier)new LoggedNotifier2();
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
-        Assert.Equal("logged", n.Send());
+
+        // Act
+        var result = n.Send();
+
+        // Assert
+        Assert.Equal("logged", result);
     }
 
     // ---------------------------------------------------------------
@@ -132,8 +208,15 @@ public class ObjectResolutionTests
     public void Label_BaseConstructorCallsOverride_DerivedFieldNotYetAssigned()
     {
         // Prediction: Approval by <null> (H)
-        // Analyzer check: did any diagnostic flag the virtual call in StepHandler's constructor? ID: none 
-        var label = new ApprovalHandler("Asha").Label;
+        // Analyzer check: did any diagnostic flag the virtual call in StepHandler's constructor? ID: none
+
+        // Arrange
+        const string approver = "Asha";
+
+        // Act
+        var label = new ApprovalHandler(approver).Label;
+
+        // Assert
         Assert.Equal("Approval by <null>", label);
     }
 
