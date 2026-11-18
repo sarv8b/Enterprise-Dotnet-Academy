@@ -10,13 +10,13 @@
 | Item | Value |
 |---|---|
 | Current phase | Phase 1 — C# and .NET Fundamentals |
-| Current topic | P1.2 OOP, interfaces, inheritance, polymorphism — NOT STARTED (next up). P1.1 **MASTERED** 2026-11-14 |
+| Current topic | P1.2 OOP, interfaces, inheritance, polymorphism — **IN PROGRESS** (`P1.2-E1` done; `P1.2-E2` next) |
 | Current project milestone | M0 — Repository foundation **COMPLETE** (2026-11-05); M1 — In-memory console engine **IN PROGRESS** (domain types added in `P1.1-E2`) |
 | Topics mastered | 2 / 54 (P1.6, P1.1) |
-| Exercises completed | 5 (`M0-E1`, `P1.6-E1b`, `P1.6-E2`, `P1.1-E1`, `P1.1-E2`) |
-| Sessions completed | 5 |
-| Last session | Session 5 — 2026-11-11 to 2026-11-14 — `P1.1-E2` Model the M1 domain types |
-| Next session | Session 6 — P1.2 concept intro, then `P1.2-E1` (see §9) |
+| Exercises completed | 6 (`M0-E1`, `P1.6-E1b`, `P1.6-E2`, `P1.1-E1`, `P1.1-E2`, `P1.2-E1`) |
+| Sessions completed | 5 (Session 6 in progress) |
+| Last session | Session 6 — 2026-11-14 to 2026-11-18 (in progress) — warm-up, P1.2 concept intro, `P1.2-E1` Dispatch and encapsulation |
+| Next session | Continue Session 6 — `P1.2-E2` Protect `WorkflowInstance` invariants (see §9) |
 
 ---
 
@@ -50,7 +50,7 @@
 | ID | Topic | Status | Evidence (exercises / check) | Notes |
 |---|---|---|---|---|
 | P1.1 | C# types, classes, structs, records | MASTERED | Implemented independently: `P1.1-E2` (M1 domain types in `src/WorkflowPlatform.Core`, 10 tests, no assistant, hint level 2–3, no solution revealed). Understanding check passed S5: `ImmutableArray` mini-check (1)–(3) all correct; UTC offset predicted correctly at H. Own-words trade-off: `WorkflowDefinition` is a class because a record's `with` could keep ID + version while changing contents; "`ImmutableArray` protects the container, not its contents". Earlier: `P1.1-E1` (predictions + learning tests). | Mastered 2026-11-14 after four review rounds on `P1.1-E2`. Phase 1 exit criterion "choose class/struct/record and justify" met. |
-| P1.2 | OOP, interfaces, inheritance, polymorphism | NOT STARTED | — | Diagnostic S1: partial — named override/hiding, wrong on hiding behaviour |
+| P1.2 | OOP, interfaces, inheritance, polymorphism | IN PROGRESS | `P1.2-E1` (S6): all dispatch predictions proven by 12 learning tests; CS0506 and CS0108 recorded; contrast experiments disproved own "virtual decides it" theory. Hint level 2–3 on reasoning; test names mentor-provided on request. | Not yet MASTERED: needs `P1.2-E2` implemented independently (encapsulating BR-05/BR-10, inheritance vs composition). S1 hiding misconception resolved (§6.3). |
 | P1.3 | Generics, delegates, events, LINQ | NOT STARTED | — | Diagnostic S1: partial — `ToList()` snapshot right; deferred execution + captured variable wrong |
 | P1.4 | Exception handling and resource management | NOT STARTED | — | Diagnostic S1: gap — missed `throw ex;` and missing error context |
 | P1.5 | Collections and nullable reference types | NOT STARTED | — | Diagnostic S1: partial — knows NRT doesn't throw; thought non-nullable can't be null at runtime |
@@ -162,6 +162,8 @@ Session 1's calibration diagnostic was a check, not an exercise, and is not list
 | `P1.1-E1` | Value vs reference semantics: predict, then prove with learning tests | P1.1 | 2026-11-10 | 2 for the predictions (hints pointing at the rule to apply, no answers revealed); 3 for test quality (specific pointers such as `Assert.Same`, splitting tests, the `Counter` property question). **Assisted:** Sarvesh confirmed in Session 5 that another assistant session helped write commits `ba8dca2` (CA1707) and `b987052` (test restructuring); the predictions, corrections and Q2 explanation were Sarvesh's own. | No | Passed after one revision round. Part A wrong or unknown: Q1 bonus (H), Q2 (H), Q4 line 1, Q6 `Cancel`; design answer too vague. All corrected: CS1612, `"Triage"`, `3`, CS1503, CS9035, CS8852; design → immutable collections. Test fixes: `TST-9` names, `TST-5` sections, one behaviour per test, `Assert.Same` on the shared list, missing Q4 cases added, `Counter` field → property (no pragma), stray runner.json removed. Scoped CA1707 suppression in `tests/.editorconfig` (assistant-assisted, see hint level). Gates: build (`-warnaserror`) 0/0, test 12/12, format clean. Branch `typesincsharp` (commits `3ec6420`, `ba8dca2`, `b987052`), merged to `main`. | `P1.1-E2` |
 | `P1.1-E2` | Model the M1 domain types (class / struct / record, immutability, equality) | P1.1 | 2026-11-14 | 2–3 (hints as questions throughout; one mini-check experiment assigned; no code given). No assistant used (confirmed). | No | Passed after four review rounds. Round 1: types in the test project with no namespace (CA1852), code contradicting the design table (`WorkflowDefinition` record, `AuditEntry` readonly struct, custom `StepKind` struct), audit-trail `Add` result discarded (BR-08 data loss), no equality. Round 2: types moved to `src/WorkflowPlatform.Core`, `enum StepKind`, `sealed record` step/transition, `WorkflowDefinition` class with `Id`+`Version` equality, defensive copy via `IEnumerable` → `ToImmutableList()`, `WorkflowInstance` equality by `Id`, CS8858 recorded for `with`. Round 3: audit-trail fix exposed a public mutable `List` (BR-08 tampering), test bypassed `MoveToNextStep`. Round 4: `IImmutableList` + `private set`, `AuditTrail = AuditTrail.Add(...)`, `Clear()`-from-outside test, UTC normalised in `AuditEntry` with a `+05:30` test, three equality tests. Gates: build (`-warnaserror`) 0/0, test 22/22, format clean. Commits `784c63c`, `1922e12`, `f6e570f`, `cd13c4d` on `main`. | P1.2 (`P1.2-E1`) |
 
+| `P1.2-E1` | Dispatch and encapsulation: predict, then prove with learning tests | P1.2 | 2026-11-18 | 2–3 for the reasoning (slot rule and interface-map hints, contrast experiments proposed by the mentor). **Assisted:** test names/skeleton (level 4, at Sarvesh's request, "naming takes time") and AAA sections (`1606004`, mentor, at Sarvesh's request as convention-only work). Predictions, test bodies, contrast types and diagnostic evidence are Sarvesh's own. Predictions made before running by Sarvesh's account; not committed first. | No | Passed. Part A after three rounds: first-round misses Q3c (L), Q4b (M), Q6 (M, right mechanism but answered `null`), Q7b (H). Contrast explanation took three attempts ("virtual vs not" → disproved by own predictions (i)/(ii) → "interface re-declared, map rebuilt"). Part B after two rounds: contrast tests were `Assert.True(true)` placeholders → real types `AuditedNotifier2`/`LoggedNotifier2`; Q6 analyzer check "none". Gates: build (`-warnaserror`) 0/0, test 36/36, format clean. Commits `c6df582` (`main`), `1606004` (branch `test/p1.2-dispatch-aaa`). | `P1.2-E2` |
+
 **Hint levels:** 0 = none · 1 = nudge · 2 = direction · 3 = specific pointer · 4 = partial code · 5 = full solution (explicitly requested)
 
 ---
@@ -200,21 +202,28 @@ Items are added only after an explanation check or independent implementation.
 - [P1.1] Defensive copy: take `IEnumerable<T>` and convert inside the constructor so the caller's original list cannot change the object — tested, `P1.1-E2` (2026-11-14).
 - [P1.1] Immutable collection methods return a **new** collection (`list = list.Add(x)`); ignoring the result silently loses data — found via a failing test (red → green), `P1.1-E2` (2026-11-14).
 - [P1.1] `DateTime` converts implicitly to `DateTimeOffset` using the local offset; predicted `+05:30` at H; normalising to UTC in the constructor keeps one canonical form — tested, `P1.1-E2` (2026-11-14).
+- [P1.6] Items accumulate, properties are replaced: a `.csproj` removes an inherited `PackageReference` with `Remove` (works because the `.csproj` is evaluated after `Directory.Build.props`); a property set in the `.csproj` wins because the last assignment wins — S6 warm-up, own words (2026-11-14).
+- [P1.1] A record compares each member with **that member's own** equality: nested records → value, a class member → reference. Proven with separate-instance tests and a contrast test — S6 warm-up (2026-11-14).
+- [P1.2] Slot rule: the static type picks the slot at compile time; a virtual slot runs the most-derived `override` of the runtime type; `new` (and `new virtual`) starts a new slot — Q1–Q3 predicted and tested, `P1.2-E1` (2026-11-18).
+- [P1.2] Interface re-implementation: re-declaring an interface rebuilds the interface map for that class, binding to its own public member; otherwise the map is inherited from the declaring class. `virtual` is not the deciding factor — proven by own contrast experiments (i)/(ii), `P1.2-E1` (2026-11-18).
+- [P1.2] `new` changes no behaviour: hiding happens anyway; `new` acknowledges deliberate hiding, silencing the compiler warning (CS0108) and telling reviewers. Overriding a non-virtual member is CS0506 — `P1.2-E1` (2026-11-18).
+- [P1.2] A virtual call from a base constructor runs the derived override before the derived constructor body, so derived fields are still unassigned; no analyzer flagged it under `latest-recommended` — `P1.2-E1` Q6 (2026-11-18).
 - [GIT] Line-ending policy: `.gitattributes` (`* text=auto eol=lf`, binary exclusions) plus `end_of_line = lf` in `.editorconfig` — implemented independently in `d1b6dfe` (2026-11-05).
 - [DOC] Writing an ADR with real alternatives, honest costs and working rules — `docs/adr/0001` (2026-11-05).
 
 ### 6.2 Concepts I struggle with
 
-Each item stays here until a later exercise shows it is resolved. Items marked S1 come from the Session 1 calibration diagnostic (2026-11-04); S2 from Session 2 (2026-11-05); S3 from Session 3 (2026-11-07 to 2026-11-08); S4 from Session 4 (2026-11-09 to 2026-11-10); S5 from Session 5 (2026-11-11 to 2026-11-14).
+Each item stays here until a later exercise shows it is resolved. Items marked S1 come from the Session 1 calibration diagnostic (2026-11-04); S2 from Session 2 (2026-11-05); S3 from Session 3 (2026-11-07 to 2026-11-08); S4 from Session 4 (2026-11-09 to 2026-11-10); S5 from Session 5 (2026-11-11 to 2026-11-14); S6 from Session 6 (2026-11-14 to 2026-11-18).
 
-- [Process] **Confidence calibration (S4, S5)** — in `P1.1-E1` Part A both wrong answers that carried a label were marked **H** (Q1 bonus, Q2). S5: labels were still left off the warm-up and the mini-check (asked three times); the one H-labelled prediction (UTC offset `+05:30`) was correct. Plan: label every prediction without being asked.
+- [Process] **Confidence calibration (S4, S5, S6)** — in `P1.1-E1` Part A both wrong answers that carried a label were marked **H** (Q1 bonus, Q2). S5: labels were still left off the warm-up and the mini-check (asked three times); the one H-labelled prediction (UTC offset `+05:30`) was correct. S6: **labelling now happens unprompted (progress)**, and `P1.2-E1` Part A misses were mostly at M/L. Still H-and-wrong: warm-up Q2a line 1 and the Q2b reasoning (reversed), Q7b first answer, the second contrast explanation, and the Q7b "interface map" answer. Pattern: H is given to *explanations* that don't cover every observed case. Plan: before saying H, check "does every term in my answer apply to this code, and does it predict the odd case?"
+- [Testing] **Tests that cannot fail (S6)** — the warm-up test reused the same step instances in both transitions (passes even if nested equality were by reference), and the first `P1.2-E1` contrast tests were `Assert.True(true)`. Both fixed after review. Habit to build: before submitting a test, ask "would this fail if my belief were wrong?"
+- [Process] **Names that describe when, not what (S6)** — `WorkflowStepNew`/`WorkflowStepNewClass`, `Exercise1.2Types.cs`, `AuditedNotifier2`/`LoggedNotifier2`. Raised twice; not yet fixed. Plan: next exercise, name each type and file for its purpose.
+- [Process] **Suppressions without a reason in the file (S6)** — `#pragma` CA1822/CA1859 suppressions carry only the rule title. The reason given verbally ("unrelated warnings interrupt the experiment") was accepted; it belongs in a one-line comment.
 - [Process] **A fix that protects the property but not the object (S5)** — the first BR-08 fix replaced silent data loss with a public mutable `List` (anyone could `Clear()` or overwrite entries), and its test bypassed `MoveToNextStep`. Fixed in the next round. Habit to build: after a fix, ask "what can outside code still do?" and test through the public behaviour.
 - [Process] **Keeping code consistent with the stated design (S5)** — the first `P1.1-E2` code contradicted the design table on four types. Habit to build: re-read the design before submitting code.
-- [P1.6] **Items accumulate, properties are replaced (S3)** — first answer to the `TestUtilities` question assumed a `.csproj` can "override" everything from a props file; items (`PackageReference`, `Using`) add to a list and need `Remove`. Explained by the mentor and applied via the `.Tests` condition, but not yet re-explained by Sarvesh. Plan: one prediction question when items next come up (M1 project references).
 - [P1.6] **Justifying settings one by one (S3)** — moved test settings to `tests/Directory.Build.props` as a group ("all test projects may share them"), which let the duplicate `ImplicitUsings` and the runner.json problem through. Asked three times for a reason per setting; the final reasons were given by the mentor. Plan: in future config/design reviews, Sarvesh justifies each line before submitting.
 - [Process] **Checking researched answers against evidence (S3)** — the first MSBuild-warnings answer was pasted text that repeated a claim (`TreatWarningsAsErrors` covers MSBuild warnings) that Sarvesh's own build output had just disproved; the follow-up summary also conflated the compiler property with the MSBuild one. Resolved for this concept after running the proofs, but the habit to build is: run the experiment first, then write the answer in own words.
 
-- [P1.2] **Method hiding (`new`)** — predicted `derived`; hidden methods bind to the variable's compile-time type, overrides to the runtime type. Plan: P1.2 prediction question.
 - [P1.3] **Deferred execution + closures** — expected the query to use the original `minLength` and list; a deferred query reads the captured variable's current value and the current collection when enumerated. Plan: P1.3 prediction exercise (also a Phase 1 exit criterion).
 - [P1.4] **Rethrowing and error context** — missed that `throw ex;` resets the stack trace (`ERR-2`), that the log message lost the exception, and that the `catch` added no value. Plan: P1.4 exercise.
 - [P1.5] **NRT guarantees** — answered "no, it can't be null at runtime" (the explanation itself was correct). NRT is compile-time only; null still arrives via deserialisation, reflection, `!`, unannotated libraries. Also: `Deserialize<T>` returns `T?`. Plan: P1.5 exercise.
@@ -227,6 +236,8 @@ Each item stays here until a later exercise shows it is resolved. Items marked S
 
 ### 6.3 Resolved struggles
 
+- [P1.6] **Items accumulate, properties are replaced** (S3) — resolved 2026-11-14: S6 warm-up answered at H and correct — `Remove` needed for an inherited `PackageReference` (works because the `.csproj` is evaluated after the props file); a property in the `.csproj` wins by last assignment. Stated in own words.
+- [P1.2] **Method hiding (`new`)** (S1, predicted `derived`) — resolved 2026-11-18: `P1.2-E1` Q1/Q2 predicted correctly and tested (hidden `Describe` binds to the static type); `new` vs no `new` proven identical at runtime (CS0108).
 - [P1.6] **SDK selection** (S1, Q11b) — had believed the `.csproj` picks the SDK. Resolved 2026-11-05: pinned the SDK with `global.json` in `M0-E1` and correctly predicted which SDK versions it accepts (check a). Remaining nuance (the version is a minimum) is tracked separately in §6.2.
 - [P1.6] **`global.json` version is a minimum** (S2) — resolved 2026-11-09: Session 4 warm-up answered correctly (10.0.105 rejected because the pinned version is a minimum under `latestFeature`).
 - [P1.1] **Value vs reference copy semantics** (S1, confidence M; resurfaced in S4 as Q2 at confidence H) — resolved 2026-11-10: corrected predictions proven by tests in `P1.1-E1` (struct copied out of a list, class mutated through a parameter but not reassigned), and explained in own words: the parameter holds a copy of the caller's reference.
@@ -240,7 +251,7 @@ Each item stays here until a later exercise shows it is resolved. Items marked S
 
 ## 7. Upcoming topics (next up)
 
-1. **P1.2** OOP, interfaces, inheritance, polymorphism — next (Session 6)
+1. **P1.2** OOP, interfaces, inheritance, polymorphism — IN PROGRESS (`P1.2-E2` next)
 2. **P1.3** Generics, delegates, events, LINQ
 3. **P1.4** Exception handling and resource management
 4. **P1.5** Collections and nullable reference types
@@ -271,20 +282,18 @@ A milestone is complete only when every "Done when" criterion in `PROJECT_SPEC.m
 
 ## 9. Next session plan
 
-### Session 6 — Start P1.2 OOP, interfaces, inheritance, polymorphism
+### Continue Session 6 — `P1.2-E2` Protect `WorkflowInstance` invariants
 
-**Warm-up (5 minutes, with confidence labels):**
-- The open P1.6 item: can a `.csproj` "override" a `PackageReference` that came from `Directory.Build.props`? What would it have to do?
-- One P1.1 retrieval question.
+**Before starting:** merge `test/p1.2-dispatch-aaa` into `main` (`git merge --ff-only`) and commit this log update.
 
-**Concept intro:** encapsulation of invariants, virtual dispatch (`override`) vs method hiding (`new`), abstract classes vs interfaces, composition over inheritance, `sealed`. Revisits diagnostic Q3 (method hiding, §6.2).
-
-**Next exercise: `P1.2-E1` Dispatch and encapsulation (~40 minutes)**
-- Part A: predict the output of snippets mixing `virtual`/`override`, `new` and interface calls through different variable types, with a confidence label on each.
-- Part B: prove each prediction with learning tests in `tests/WorkflowPlatform.Learning.Tests`.
+**Next exercise: `P1.2-E2` (implemented independently — this is the evidence P1.2 needs for MASTERED)**
+- Move behaviour into the M1 domain so `WorkflowInstance` protects its own invariants: only transitions defined from the current step (BR-05); no moves after a terminal step (BR-10). Today `MoveToNextStep` accepts any `WorkflowStep`.
+- Decide between inheritance and composition for step-kind behaviour, and justify it with a trade-off.
+- Tests through the public behaviour, each able to fail if the rule were missing (§6.2 "tests that cannot fail").
+- Name types and files for their purpose (§6.2).
 - The detailed brief will be given at the start of the exercise.
 
-**Then:** `P1.2-E2`: move behaviour into the M1 domain so that `WorkflowInstance` protects its own invariants (e.g. only transitions defined from the current step, BR-05; no moves after a terminal step, BR-10), and decide between inheritance and composition for step-kind behaviour.
+**Then:** P1.2 understanding check (design-decision question); if passed with `P1.2-E2` independent, P1.2 → MASTERED and on to P1.3.
 
 ---
 
@@ -438,6 +447,32 @@ A milestone is complete only when every "Done when" criterion in `PROJECT_SPEC.m
   - `MoveToNextStep` reads `DateTimeOffset.UtcNow` directly, which is hard to test deterministically (`TST-2`; `TimeProvider` comes in Phase 2). It also doesn't check BR-05/BR-10 yet (planned for `P1.2-E2`).
   - Optional ADR `0002`.
 - **Next exercise:** `P1.2-E1` Dispatch and encapsulation, after the P1.2 concept intro (see §9).
+
+### Session 6 — 2026-11-14 to 2026-11-18 (in progress)
+- **Topics covered:**
+  - Warm-up: MSBuild items vs properties (P1.6); nested record equality (P1.1).
+  - P1.2 concept intro: encapsulation as protecting invariants (BR-05/BR-10 gap in `MoveToNextStep`); the slot rule (`virtual`/`override`/`new`/`new virtual`/`sealed override`); interface maps; abstract class vs interface; composition over inheritance (decorator preview); `sealed`.
+- **Exercises:** `P1.2-E1` Dispatch and encapsulation — **completed**, hint level 2–3 on reasoning; test names (level 4) and AAA sections provided by the mentor at Sarvesh's request (see §5).
+- **Understanding check:**
+  - Warm-up Q1 (items vs properties): (a)/(b) correct at H; (c) half-answered, completed correctly on request → P1.6 struggle resolved.
+  - Warm-up Q2: line 1 **wrong at H** (`false`), corrected after a hint; (b) result right, reasoning first reversed (outer/member level), then restated correctly. Proven with a test after fixing two review issues.
+  - `P1.2-E1` Part A first round: Q1, Q2, Q3a/b, Q4a, Q5, Q7a correct; Q3c (L), Q4b (M), Q6 value (M), Q7b (H) wrong. All revised correctly.
+  - Contrast (Q3 vs Q4): "virtual vs not" (M) → disproved by own predictions (i)/(ii) → "interface re-declared, map rebuilt" accepted.
+  - Q7b: "versioning … different implementations" → accepted after three rounds as "`new` acknowledges deliberate hiding to the compiler (CS0108) and reviewers; no behaviour change".
+- **Mistakes and corrections:**
+  - Warm-up test: commented out two existing `P1.1-E1` tests (22 → 21) to dodge name clashes → restored, new types renamed.
+  - Warm-up test reused the same step instances, so it could not fail under the wrong hypothesis → separate instances + contrast test.
+  - Contrast tests were `Assert.True(true)` placeholders → real types and calls.
+  - Q6 answered `null` instead of reading the `??` expression → `Approval by <null>`.
+  - Q7b: "a new implementation version" (that is `override`) and "in the interface map" (`Describe` is not an interface member) → corrected.
+  - Commit `c6df582` used type `tests:` and a topic-not-intent subject (`GIT-5`, `GIT-3`); don't rewrite history.
+- **Best practices introduced:** a learning test must fail if the belief were wrong; controlled experiments (change one thing, keep originals untouched); suppressions need a reason in the file; analyzers miss real bug classes (virtual call in constructor — no diagnostic); `new` in review is a red flag; seal classes not designed for inheritance; AAA with a separate Act line.
+- **Status changes:** P1.2 `NOT STARTED` → `IN PROGRESS`. Resolved: P1.6 items vs properties; P1.2 method hiding. Added to §6.2: tests that cannot fail; names describing when not what; suppressions without reasons. Merged branches `typesincsharp` and `feat/core-domain-types` confirmed deleted.
+- **Open items carried over:**
+  - Merge `test/p1.2-dispatch-aaa` (`1606004`) into `main`; commit this log update.
+  - Rename `Exercise1.2Types.cs`, `WorkflowStepNew*`, `*Notifier2` for purpose; add reason comments to CA1822/CA1859 suppressions.
+  - From S5: `IEquatable<WorkflowDefinition>`; rename `TestMutability_...` (`TST-9`, AAA); redundant `'$(MSBuildProjectName)' != ''` guard; `MoveToNextStep` reads `DateTimeOffset.UtcNow` directly (`TST-2`, `TimeProvider` in Phase 2); optional ADR `0002`.
+- **Next exercise:** `P1.2-E2` Protect `WorkflowInstance` invariants (see §9).
 
 <!--
 ### Session N — YYYY-MM-DD
